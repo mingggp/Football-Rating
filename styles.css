@@ -401,7 +401,8 @@ html, body {
   padding: 10px 8px 8px;
   cursor: grab;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
   user-select: none;
   animation: cardPop 0.4s ease;
 }
@@ -411,16 +412,36 @@ html, body {
 }
 .player-card:active { cursor: grabbing; }
 .player-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,240,255,0.35);
-  border-color: var(--neon);
+  transform: scale(1.15) translateY(-8px);
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(255,210,58,0.7), 
+    0 0 45px rgba(255,210,58,0.4),
+    inset 0 0 15px rgba(255,210,58,0.3);
+  border-color: var(--neon-yellow);
+  z-index: 100;
 }
-.player-card.dragging { opacity: 0.4; transform: scale(0.95); }
+.player-card.dragging { opacity: 0.4; transform: scale(0.95); z-index: 0; }
 
 .team-a .player-card, .player-card[data-team="A"] { border-color: rgba(0,240,255,0.35); }
-.team-a .player-card:hover, .player-card[data-team="A"]:hover { box-shadow: 0 8px 24px rgba(0,240,255,0.5); }
+.team-a .player-card:hover, .player-card[data-team="A"]:hover { 
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(0,240,255,0.7), 
+    0 0 45px rgba(0,240,255,0.4),
+    inset 0 0 15px rgba(0,240,255,0.3);
+  border-color: #00f0ff;
+}
+
 .team-b .player-card, .player-card[data-team="B"] { border-color: rgba(255,62,165,0.35); }
-.team-b .player-card:hover, .player-card[data-team="B"]:hover { box-shadow: 0 8px 24px rgba(255,62,165,0.5); }
+.team-b .player-card:hover, .player-card[data-team="B"]:hover { 
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(255,62,165,0.7), 
+    0 0 45px rgba(255,62,165,0.4),
+    inset 0 0 15px rgba(255,62,165,0.3);
+  border-color: #ff3ea5;
+}
 
 .player-avatar {
   width: 100px; height: 100px;
