@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Football Rating · 5v5</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-icon">⚽</span>
+      <div>
+        <h1>FOOTBALL RATING</h1>
+        <p class="subtitle">5v5 · Tactical Board</p>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="field">
+        <span>🏟️</span> สนาม
+      </button>
+      <button class="tab" data-tab="summary">
+        <span>📊</span> สรุปทั้งหมด
+      </button>
+    </nav>
+
+    <div class="actions">
+      <button class="btn-ghost" id="btnUnlock" title="ปลดล็อคตำแหน่งการจัดวาง">🔓 Unlock</button>
+      <button class="btn-ghost" id="btnTheme" title="สลับโหมดสว่าง/มืด">☀️ Light</button>
+      <button class="btn-ghost" id="btnExport" title="Export JSON">⤓ Export</button>
+      <button class="btn-ghost" id="btnImport" title="Import JSON">⤒ Import</button>
+      <button class="btn-ghost btn-danger" id="btnReset" title="ล้างทั้งหมด">⟲ Reset</button>
+      <input type="file" id="fileInput" accept="application/json" hidden />
+    </div>
+  </header>
+
+  <!-- ============ FIELD VIEW ============ -->
+  <main class="view view-field active" id="view-field">
+    <section class="pitch-wrap">
+      <div class="pitch" id="pitch">
+        <!-- Pitch markings -->
+        <div class="pitch-bg">
+          <div class="center-circle"></div>
+          <div class="center-line"></div>
+          <div class="center-dot"></div>
+          <div class="penalty-box left"></div>
+          <div class="penalty-box right"></div>
+          <div class="goal left"></div>
+          <div class="goal right"></div>
+        </div>
+
+        <!-- Team A (Left half) -->
+        <div class="team team-a" data-team="A">
+          <div class="team-label">TEAM A</div>
+          <div class="slot" data-position="GK"  data-team="A" data-index="0"></div>
+          <div class="slot" data-position="DEF" data-team="A" data-index="0"></div>
+          <div class="slot" data-position="DEF" data-team="A" data-index="1"></div>
+          <div class="slot" data-position="FWD" data-team="A" data-index="0"></div>
+          <div class="slot" data-position="FWD" data-team="A" data-index="1"></div>
+        </div>
+
+        <!-- Team B (Right half) -->
+        <div class="team team-b" data-team="B">
+          <div class="team-label">TEAM B</div>
+          <div class="slot" data-position="FWD" data-team="B" data-index="0"></div>
+          <div class="slot" data-position="FWD" data-team="B" data-index="1"></div>
+          <div class="slot" data-position="DEF" data-team="B" data-index="0"></div>
+          <div class="slot" data-position="DEF" data-team="B" data-index="1"></div>
+          <div class="slot" data-position="GK"  data-team="B" data-index="0"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bench -->
+    <section class="bench-wrap">
+      <div class="bench-header">
+        <h2>🪑 ตัวสำรอง <span class="bench-count" id="benchCount">0</span></h2>
+        <button class="btn-add" id="btnAddPlayer">＋ เพิ่มผู้เล่น</button>
+      </div>
+      <div class="bench" id="bench" data-bench="true"></div>
+    </section>
+  </main>
+
+  <!-- ============ SUMMARY VIEW ============ -->
+  <main class="view view-summary" id="view-summary">
+    <div class="summary-header">
+      <h2>📊 สรุป Rating ผู้เล่นทั้งหมด</h2>
+      <div class="summary-info" style="display: flex; gap: 12px; align-items: center;">
+        <span><span id="totalCount">0</span> คน · คลิกหัวตารางเพื่อ sort</span>
+        <button class="btn-ghost" id="btnToggleCols" style="padding: 4px 10px; font-size: 12px;">⚙️ เลือกคอลัมน์</button>
+      </div>
+    </div>
+    <div class="col-toggles" id="colToggles" style="display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px;">
+      <!-- filled by JS -->
+    </div>
+    <div class="table-wrap">
+      <table class="summary-table" id="summaryTable">
+        <thead>
+          <tr id="summaryHead">
+            <!-- filled by JS -->
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ============ PLAYER DETAIL MODAL ============ -->
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal-card" id="modalCard">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <div class="modal-top">
+        <div class="player-avatar-lg" id="modalAvatar" style="cursor: pointer;" title="คลิกเพื่อเปลี่ยนรูป">
+          <input type="file" id="modalImageInput" accept="image/*" hidden />
+          <img id="modalImg" src="" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 2;" />
+          <span id="modalInitials">??</span>
+          <div class="avatar-ring"></div>
+        </div>
+        <div class="modal-info">
+          <input type="text" class="modal-name" id="modalName" placeholder="ชื่อผู้เล่น" />
+          <div class="modal-pos-row">
+            <span class="badge" id="modalPosition">SUB</span>
+            <span class="badge badge-rating" id="modalOverall">0.0</span>
+          </div>
+          <div class="stars" id="modalStars" data-key="rating"></div>
+        </div>
+      </div>
+
+      <div class="modal-stats">
+        <div class="section-title">
+          <h3>📈 Stats</h3>
+          <button class="btn-add-small" id="btnAddStat">＋ เพิ่ม Stat</button>
+        </div>
+        <div class="stats-list" id="statsList"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-danger" id="btnDeletePlayer">🗑️ ลบผู้เล่น</button>
+        <button class="btn-primary" id="btnSavePlayer">เสร็จแล้ว</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add stat dialog -->
+  <div class="modal-backdrop small" id="addStatModal" hidden>
+    <div class="modal-card small">
+      <h3>เพิ่ม Stat ใหม่</h3>
+      <input type="text" id="newStatName" placeholder="เช่น Save, Dribbling, Heading..." />
+      <div class="modal-footer">
+        <button class="btn-ghost" id="cancelAddStat">ยกเลิก</button>
+        <button class="btn-primary" id="confirmAddStat">เพิ่ม</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase (รอ Config จากผู้ใช้) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    /* 
+    TODO: รอเอา config จาก Firebase Console มาใส่ตรงนี้
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.firebaseDB = { db, ref, set, onValue }; // ส่งต่อให้ app.js ใช้งาน
+    window.dispatchEvent(new Event('firebase-ready'));
+    */
+  </script>
+
+  <script src="app.js"></script>
+</body>
+</html>
