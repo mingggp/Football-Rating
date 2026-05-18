@@ -362,13 +362,15 @@ function openPlayerModal(id) {
   }
 
   renderStars(modalStars, p.rating, 10, (val) => {
-    p.rating = val;
+    const currentP = getPlayer(p.id);
+    if (!currentP) return;
+    currentP.rating = val;
     modalOverall.value = val.toFixed(1);
     saveState();
     // Update card in field
-    const cardFront = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-front .player-rating-mini`);
+    const cardFront = document.querySelector(`.player-card[data-player-id="${currentP.id}"] .card-front .player-rating-mini`);
     if (cardFront) cardFront.textContent = val.toFixed(1);
-    const cardBack = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-back-rating-large`);
+    const cardBack = document.querySelector(`.player-card[data-player-id="${currentP.id}"] .card-back-rating-large`);
     if (cardBack) cardBack.textContent = val.toFixed(1);
   });
 
@@ -466,12 +468,14 @@ modalOverall.addEventListener('input', (e) => {
   
   // Re-render stars to match input
   renderStars(modalStars, p.rating, 10, (v) => {
-    p.rating = v;
+    const currentP = getPlayer(p.id);
+    if (!currentP) return;
+    currentP.rating = v;
     modalOverall.value = v.toFixed(1);
     saveState();
-    const cardFront = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-front .player-rating-mini`);
+    const cardFront = document.querySelector(`.player-card[data-player-id="${currentP.id}"] .card-front .player-rating-mini`);
     if (cardFront) cardFront.textContent = v.toFixed(1);
-    const cardBack = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-back-rating-large`);
+    const cardBack = document.querySelector(`.player-card[data-player-id="${currentP.id}"] .card-back-rating-large`);
     if (cardBack) cardBack.textContent = v.toFixed(1);
   });
   
@@ -548,7 +552,9 @@ function renderStatsList(p) {
       const pct = clamp((e.clientX - rect.left) / rect.width, 0, 1);
       // Snap to nearest 0.5
       const newVal = Math.round(pct * 20) / 2;
-      p.stats[key] = newVal;
+      const currentP = getPlayer(p.id);
+      if (!currentP) return;
+      currentP.stats[key] = newVal;
       saveState();
       // Update tier and width
       const t = newVal >= 9 ? 'elite' : newVal >= 7 ? 'high' : newVal >= 5 ? 'mid' : 'low';
@@ -562,9 +568,11 @@ function renderStatsList(p) {
       if (DEFAULT_STATS.includes(key)) {
         if (!confirm(`"${key}" เป็น stat หลัก จะลบจริงๆ?`)) return;
       }
-      delete p.stats[key];
+      const currentP = getPlayer(p.id);
+      if (!currentP) return;
+      delete currentP.stats[key];
       saveState();
-      renderStatsList(p);
+      renderStatsList(currentP);
     });
 
     statsList.appendChild(row);
