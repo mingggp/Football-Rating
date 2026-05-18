@@ -395,24 +395,80 @@ html, body {
   position: relative;
   width: 100%;
   max-width: 150px;
-  background: linear-gradient(160deg, var(--card-bg-1), var(--card-bg-2));
-  border: 1px solid var(--border);
+  height: 180px;
+  perspective: 1000px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
   border-radius: 14px;
-  padding: 10px 8px 8px;
   cursor: grab;
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1;
   user-select: none;
   animation: cardPop 0.4s ease;
+  z-index: 1;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.6s ease;
+  transform-style: preserve-3d;
+  border-radius: 14px;
+}
+
+.player-card:hover {
+  z-index: 100;
+}
+.player-card:hover .card-inner {
+  transform: scale(1.15) translateY(-8px) rotateY(180deg);
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(255,210,58,0.7), 
+    0 0 45px rgba(255,210,58,0.4);
+}
+.team-a .player-card:hover .card-inner, .player-card[data-team="A"]:hover .card-inner {
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(0,240,255,0.7), 
+    0 0 45px rgba(0,240,255,0.4);
+}
+.team-b .player-card:hover .card-inner, .player-card[data-team="B"]:hover .card-inner {
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6), 
+    0 0 25px rgba(255,62,165,0.7), 
+    0 0 45px rgba(255,62,165,0.4);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--card-bg-1), var(--card-bg-2));
+  border: 1px solid var(--border);
   overflow: hidden;
+}
+
+.card-front {
+  padding: 10px 8px 8px;
+  text-align: center;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @keyframes spinBorder {
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-.player-card::before {
+.card-front::before, .card-back::before {
   content: "";
   position: absolute;
   top: 50%; left: 50%;
@@ -425,12 +481,18 @@ html, body {
   z-index: 0;
   pointer-events: none;
 }
-.team-a .player-card::before, .player-card[data-team="A"]::before { background: conic-gradient(from 0deg, transparent, transparent 70%, #00f0ff 100%); }
-.team-b .player-card::before, .player-card[data-team="B"]::before { background: conic-gradient(from 0deg, transparent, transparent 70%, #ff3ea5 100%); }
+.team-a .card-front::before, .team-a .card-back::before,
+.player-card[data-team="A"] .card-front::before, .player-card[data-team="A"] .card-back::before {
+  background: conic-gradient(from 0deg, transparent, transparent 70%, #00f0ff 100%);
+}
+.team-b .card-front::before, .team-b .card-back::before,
+.player-card[data-team="B"] .card-front::before, .player-card[data-team="B"] .card-back::before {
+  background: conic-gradient(from 0deg, transparent, transparent 70%, #ff3ea5 100%);
+}
 
-.player-card:hover::before { opacity: 1; }
+.player-card:hover .card-front::before, .player-card:hover .card-back::before { opacity: 1; }
 
-.player-card::after {
+.card-front::after, .card-back::after {
   content: "";
   position: absolute;
   top: 2px; left: 2px; right: 2px; bottom: 2px;
@@ -439,42 +501,71 @@ html, body {
   z-index: 0;
   pointer-events: none;
 }
-@keyframes cardPop {
-  from { opacity: 0; transform: scale(0.7); }
-  to { opacity: 1; transform: scale(1); }
-}
-.player-card:active { cursor: grabbing; }
-.player-card:hover {
-  transform: scale(1.15) translateY(-8px);
-  box-shadow: 
-    0 15px 35px rgba(0,0,0,0.6), 
-    0 0 25px rgba(255,210,58,0.7), 
-    0 0 45px rgba(255,210,58,0.4),
-    inset 0 0 15px rgba(255,210,58,0.3);
-  border-color: var(--neon-yellow);
-  z-index: 100;
-}
-.player-card.dragging { opacity: 0.4; transform: scale(0.95); z-index: 0; }
 
-.team-a .player-card, .player-card[data-team="A"] { border-color: rgba(0,240,255,0.35); }
-.team-a .player-card:hover, .player-card[data-team="A"]:hover { 
-  box-shadow: 
-    0 15px 35px rgba(0,0,0,0.6), 
-    0 0 25px rgba(0,240,255,0.7), 
-    0 0 45px rgba(0,240,255,0.4),
-    inset 0 0 15px rgba(0,240,255,0.3);
-  border-color: #00f0ff;
+.team-a .card-front, .team-a .card-back, .player-card[data-team="A"] .card-front, .player-card[data-team="A"] .card-back { border-color: rgba(0,240,255,0.35); }
+.team-b .card-front, .team-b .card-back, .player-card[data-team="B"] .card-front, .player-card[data-team="B"] .card-back { border-color: rgba(255,62,165,0.35); }
+
+.player-card.dragging { opacity: 0.4; z-index: 0; }
+.player-card.dragging .card-inner { transform: scale(0.95); }
+
+/* --- BACK OF CARD CONTENT --- */
+.card-back-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1;
+  opacity: 0.4;
+}
+.card-back-bg img, .card-back-bg div {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.card-back-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+}
+.card-back-name {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  margin-bottom: 2px;
+  text-align: center;
+}
+.card-back-rating-large {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--neon-yellow);
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  margin-bottom: 10px;
+}
+.card-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
+  width: 100%;
+  z-index: 2;
+}
+.card-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.card-stat-name {
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+.card-stat-val {
+  color: #fff;
+  font-weight: 800;
 }
 
-.team-b .player-card, .player-card[data-team="B"] { border-color: rgba(255,62,165,0.35); }
-.team-b .player-card:hover, .player-card[data-team="B"]:hover { 
-  box-shadow: 
-    0 15px 35px rgba(0,0,0,0.6), 
-    0 0 25px rgba(255,62,165,0.7), 
-    0 0 45px rgba(255,62,165,0.4),
-    inset 0 0 15px rgba(255,62,165,0.3);
-  border-color: #ff3ea5;
-}
 
 .player-avatar {
   position: relative;

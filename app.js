@@ -182,11 +182,41 @@ function renderPlayerCard(p) {
     ? `<img src="${p.image}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
     : initials(p.name);
 
+  // Create Stats HTML for the back
+  let statsHtml = '';
+  const statKeys = Object.keys(p.stats).slice(0, 6);
+  statKeys.forEach(k => {
+    statsHtml += `
+      <div class="card-stat-row">
+        <span class="card-stat-name">${k.substring(0,3).toUpperCase()}</span>
+        <span class="card-stat-val">${p.stats[k]}</span>
+      </div>
+    `;
+  });
+
+  const posTagHtml = `<span class="player-pos-tag">${posTag}</span>`;
+
   card.innerHTML = `
-    <span class="player-pos-tag">${posTag}</span>
-    <div class="player-avatar">${avatarHtml}</div>
-    <div class="player-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
-    <div class="player-rating-mini">${p.rating.toFixed(1)}</div>
+    <div class="card-inner">
+      <!-- FRONT -->
+      <div class="card-front">
+        ${posTagHtml}
+        <div class="player-avatar">${avatarHtml}</div>
+        <div class="player-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
+        <div class="player-rating-mini">${p.rating.toFixed(1)}</div>
+      </div>
+      <!-- BACK -->
+      <div class="card-back">
+        <div class="card-back-bg">${avatarHtml}</div>
+        <div class="card-back-overlay">
+          <div class="card-back-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
+          <div class="card-back-rating-large">${p.rating.toFixed(1)}</div>
+          <div class="card-stats-grid">
+            ${statsHtml}
+          </div>
+        </div>
+      </div>
+    </div>
   `;
 
   card.addEventListener('click', () => openPlayerModal(p.id));
@@ -336,8 +366,10 @@ function openPlayerModal(id) {
     modalOverall.value = val.toFixed(1);
     saveState();
     // Update card in field
-    const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
-    if (card) card.textContent = val.toFixed(1);
+    const cardFront = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-front .player-rating-mini`);
+    if (cardFront) cardFront.textContent = val.toFixed(1);
+    const cardBack = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-back-rating-large`);
+    if (cardBack) cardBack.textContent = val.toFixed(1);
   });
 
   renderStatsList(p);
@@ -437,13 +469,17 @@ modalOverall.addEventListener('input', (e) => {
     p.rating = v;
     modalOverall.value = v.toFixed(1);
     saveState();
-    const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
-    if (card) card.textContent = v.toFixed(1);
+    const cardFront = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-front .player-rating-mini`);
+    if (cardFront) cardFront.textContent = v.toFixed(1);
+    const cardBack = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-back-rating-large`);
+    if (cardBack) cardBack.textContent = v.toFixed(1);
   });
   
   // Update card in field
-  const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
-  if (card) card.textContent = val.toFixed(1);
+  const cardFront = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-front .player-rating-mini`);
+  if (cardFront) cardFront.textContent = val.toFixed(1);
+  const cardBack = document.querySelector(`.player-card[data-player-id="${p.id}"] .card-back-rating-large`);
+  if (cardBack) cardBack.textContent = val.toFixed(1);
 });
 
 document.getElementById('btnDeletePlayer').addEventListener('click', () => {
