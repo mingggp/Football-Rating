@@ -394,8 +394,8 @@ html, body {
 .player-card {
   position: relative;
   width: 100%;
-  max-width: 150px;
-  height: 180px;
+  max-width: 170px;
+  height: 204px;
   perspective: 1000px;
   background: transparent !important;
   border: none !important;
@@ -421,7 +421,7 @@ html, body {
   z-index: 100;
 }
 .player-card:hover .card-inner {
-  transform: scale(1.15) translateY(-8px) rotateY(180deg);
+  transform: scale(1.35) translateY(-10px) rotateY(180deg);
   box-shadow: 
     0 15px 35px rgba(0,0,0,0.6), 
     0 0 25px rgba(255,210,58,0.7), 
@@ -570,7 +570,7 @@ html, body {
 .player-avatar {
   position: relative;
   z-index: 2;
-  width: 100px; height: 100px;
+  width: 110px; height: 110px;
   margin: 0 auto 12px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--neon), var(--neon-purple));
@@ -589,7 +589,7 @@ html, body {
 .player-name {
   position: relative;
   z-index: 2;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
@@ -604,7 +604,7 @@ html, body {
   justify-content: center;
   align-items: center;
   gap: 3px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--neon-yellow);
   font-weight: 700;
 }
