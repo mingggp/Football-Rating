@@ -423,24 +423,25 @@ html, body {
 .team-b .player-card:hover, .player-card[data-team="B"]:hover { box-shadow: 0 8px 24px rgba(255,62,165,0.5); }
 
 .player-avatar {
-  width: 44px; height: 44px;
-  margin: 0 auto 6px;
+  width: 68px; height: 68px;
+  margin: 0 auto 10px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--neon), var(--neon-purple));
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 24px;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-  border: 2px solid rgba(255,255,255,0.25);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  border: 3px solid rgba(255,255,255,0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 .team-b .player-avatar, .player-card[data-team="B"] .player-avatar { background: linear-gradient(135deg, var(--neon-pink), var(--neon-yellow)); }
 
 .player-name {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
