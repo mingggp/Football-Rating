@@ -405,6 +405,39 @@ html, body {
   z-index: 1;
   user-select: none;
   animation: cardPop 0.4s ease;
+  overflow: hidden;
+}
+
+@keyframes spinBorder {
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.player-card::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(from 0deg, transparent, transparent 70%, var(--neon-yellow) 100%);
+  animation: spinBorder 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+.team-a .player-card::before, .player-card[data-team="A"]::before { background: conic-gradient(from 0deg, transparent, transparent 70%, #00f0ff 100%); }
+.team-b .player-card::before, .player-card[data-team="B"]::before { background: conic-gradient(from 0deg, transparent, transparent 70%, #ff3ea5 100%); }
+
+.player-card:hover::before { opacity: 1; }
+
+.player-card::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px; right: 2px; bottom: 2px;
+  background: linear-gradient(160deg, var(--card-bg-1), var(--card-bg-2));
+  border-radius: 12px;
+  z-index: 0;
+  pointer-events: none;
 }
 @keyframes cardPop {
   from { opacity: 0; transform: scale(0.7); }
@@ -444,6 +477,8 @@ html, body {
 }
 
 .player-avatar {
+  position: relative;
+  z-index: 2;
   width: 100px; height: 100px;
   margin: 0 auto 12px;
   border-radius: 50%;
@@ -461,6 +496,8 @@ html, body {
 .team-b .player-avatar, .player-card[data-team="B"] .player-avatar { background: linear-gradient(135deg, var(--neon-pink), var(--neon-yellow)); }
 
 .player-name {
+  position: relative;
+  z-index: 2;
   font-size: 16px;
   font-weight: 900;
   white-space: nowrap;
@@ -470,6 +507,8 @@ html, body {
   color: var(--text);
 }
 .player-rating-mini {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -481,8 +520,9 @@ html, body {
 .player-rating-mini::before { content: "★"; }
 .player-pos-tag {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  z-index: 3;
+  top: 6px;
+  right: 6px;
   background: var(--neon);
   color: #000;
   font-size: 9px;
