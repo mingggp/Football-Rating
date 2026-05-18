@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Football Rating · 5v5</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Rating · 5v5</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <!-- Animated background -->
   <div class="bg-grid"></div>
@@ -58,7 +60,7 @@
         <!-- Team A (Left half) -->
         <div class="team team-a" data-team="A">
           <div class="team-label">TEAM A</div>
-          <div class="slot" data-position="GK"  data-team="A" data-index="0"></div>
+          <div class="slot" data-position="GK" data-team="A" data-index="0"></div>
           <div class="slot" data-position="DEF" data-team="A" data-index="0"></div>
           <div class="slot" data-position="DEF" data-team="A" data-index="1"></div>
           <div class="slot" data-position="FWD" data-team="A" data-index="0"></div>
@@ -72,7 +74,7 @@
           <div class="slot" data-position="FWD" data-team="B" data-index="1"></div>
           <div class="slot" data-position="DEF" data-team="B" data-index="0"></div>
           <div class="slot" data-position="DEF" data-team="B" data-index="1"></div>
-          <div class="slot" data-position="GK"  data-team="B" data-index="0"></div>
+          <div class="slot" data-position="GK" data-team="B" data-index="0"></div>
         </div>
       </div>
     </section>
@@ -93,10 +95,12 @@
       <h2>📊 สรุป Rating ผู้เล่นทั้งหมด</h2>
       <div class="summary-info" style="display: flex; gap: 12px; align-items: center;">
         <span><span id="totalCount">0</span> คน · คลิกหัวตารางเพื่อ sort</span>
-        <button class="btn-ghost" id="btnToggleCols" style="padding: 4px 10px; font-size: 12px;">⚙️ เลือกคอลัมน์</button>
+        <button class="btn-ghost" id="btnToggleCols" style="padding: 4px 10px; font-size: 12px;">⚙️
+          เลือกคอลัมน์</button>
       </div>
     </div>
-    <div class="col-toggles" id="colToggles" style="display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px;">
+    <div class="col-toggles" id="colToggles"
+      style="display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px;">
       <!-- filled by JS -->
     </div>
     <div class="table-wrap">
@@ -119,7 +123,8 @@
       <div class="modal-top">
         <div class="player-avatar-lg" id="modalAvatar" style="cursor: pointer;" title="คลิกเพื่อเปลี่ยนรูป">
           <input type="file" id="modalImageInput" accept="image/*" hidden />
-          <img id="modalImg" src="" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 2;" />
+          <img id="modalImg" src=""
+            style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 2;" />
           <span id="modalInitials">??</span>
           <div class="avatar-ring"></div>
         </div>
@@ -182,8 +187,25 @@
     window.firebaseDB = { db, ref, set, onValue }; // ส่งต่อให้ app.js ใช้งาน
     window.dispatchEvent(new Event('firebase-ready'));
     */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA13EW8n-VK5NiaqFw3RWf3o_Gk6XMIVsc",
+      authDomain: "football-rating-794e7.firebaseapp.com",
+      databaseURL: "https://football-rating-794e7-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "football-rating-794e7",
+      storageBucket: "football-rating-794e7.firebasestorage.app",
+      messagingSenderId: "744220509434",
+      appId: "1:744220509434:web:49e69dbbfe861d33743543",
+      measurementId: "G-3JD4QNCKPC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.firebaseDB = { db, ref, set, onValue }; // ส่งต่อให้ app.js ใช้งาน
+    window.dispatchEvent(new Event('firebase-ready'));
   </script>
 
   <script src="app.js"></script>
 </body>
+
 </html>
