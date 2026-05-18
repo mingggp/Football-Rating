@@ -65,16 +65,22 @@ function mkPlayer({ name, team = null, position = 'SUB', index = null, rating = 
 let isSyncing = false; // ป้องกันการเซฟลูปกลับไปตอนรับข้อมูล
 
 function saveState() {
+  const jsonStr = JSON.stringify(state);
+  
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    
+    localStorage.setItem(STORAGE_KEY, jsonStr);
+  } catch (e) {
+    console.warn('localStorage saveState failed', e);
+  }
+  
+  try {
     // ถ้าเชื่อมต่อ Firebase แล้ว ให้ส่งข้อมูลขึ้น Server ด้วย
     if (window.firebaseDB && !isSyncing) {
       const { db, ref, set } = window.firebaseDB;
       set(ref(db, 'football-rating/state'), state);
     }
   } catch (e) {
-    console.warn('saveState failed', e);
+    console.warn('firebase saveState failed', e);
   }
 }
 
@@ -346,14 +352,49 @@ document.getElementById('modalImageInput').addEventListener('change', (e) => {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (ev) => {
-    const p = getPlayer(currentEditingId);
-    if (!p) return;
-    p.image = ev.target.result;
-    saveState();
-    const modalImg = document.getElementById('modalImg');
-    modalImg.src = p.image;
-    modalImg.style.display = 'block';
-    document.getElementById('modalInitials').style.display = 'none';
+    const img = new Image();
+    img.onload = () => {
+      // Compress image
+      const canvas = document.createElement('canvas');
+      const MAX_SIZE = 250; // Resize to max 250px
+      let width = img.width;
+      let height = img.height;
+      
+      if (width > height) {
+        if (width > MAX_SIZE) {
+          height *= MAX_SIZE / width;
+          width = MAX_SIZE;
+        }
+      } else {
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85); // 85% quality JPEG
+      
+      const p = getPlayer(currentEditingId);
+      if (!p) return;
+      p.image = compressedBase64;
+      saveState();
+      
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = p.image;
+      modalImg.style.display = 'block';
+      document.getElementById('modalInitials').style.display = 'none';
+      
+      // Update field avatar instantly
+      const fieldCardAvatar = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-avatar`);
+      if (fieldCardAvatar) {
+        fieldCardAvatar.innerHTML = `<img src="${p.image}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+      }
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
   e.target.value = '';
