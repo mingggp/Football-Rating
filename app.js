@@ -304,7 +304,7 @@ function openPlayerModal(id) {
 
   modalName.value = p.name;
   modalPosition.textContent = p.team ? `TEAM ${p.team} · ${p.position}` : 'SUB';
-  modalOverall.textContent = p.rating.toFixed(1);
+  modalOverall.value = p.rating.toFixed(1);
   modalInitials.textContent = initials(p.name);
 
   // Set avatar color based on team
@@ -327,7 +327,7 @@ function openPlayerModal(id) {
 
   renderStars(modalStars, p.rating, 10, (val) => {
     p.rating = val;
-    modalOverall.textContent = val.toFixed(1);
+    modalOverall.value = val.toFixed(1);
     saveState();
     // Update card in field
     const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
@@ -378,6 +378,31 @@ modalName.addEventListener('input', () => {
   p.name = modalName.value || 'Unknown';
   modalInitials.textContent = initials(p.name);
   saveState();
+});
+
+modalOverall.addEventListener('input', (e) => {
+  const p = getPlayer(currentEditingId);
+  if (!p) return;
+  let val = parseFloat(e.target.value);
+  if (isNaN(val)) val = 0;
+  if (val > 10) val = 10;
+  if (val < 0) val = 0;
+  
+  p.rating = val;
+  saveState();
+  
+  // Re-render stars to match input
+  renderStars(modalStars, p.rating, 10, (v) => {
+    p.rating = v;
+    modalOverall.value = v.toFixed(1);
+    saveState();
+    const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
+    if (card) card.textContent = v.toFixed(1);
+  });
+  
+  // Update card in field
+  const card = document.querySelector(`.player-card[data-player-id="${p.id}"] .player-rating-mini`);
+  if (card) card.textContent = val.toFixed(1);
 });
 
 document.getElementById('btnDeletePlayer').addEventListener('click', () => {
